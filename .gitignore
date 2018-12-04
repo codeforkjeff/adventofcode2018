@@ -68,3 +68,4 @@ fabric.properties
 # more
 project/target
 target
+.attach_pid*
