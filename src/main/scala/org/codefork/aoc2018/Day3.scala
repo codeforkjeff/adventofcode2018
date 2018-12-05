@@ -4,8 +4,9 @@ import scala.io.Source
 
 class Day3 {
   val url = getClass.getResource("/day3/input.txt")
-  val claims = Source.fromURL(url).getLines().toSeq.map(Day3.Claim.parse(_))
-  val overlaps = Day3.Claim.findOverlapsAll(Set[(Int, Int)](), claims)
+  val claims =
+    Source.fromURL(url).getLines().toSeq.map(Day3.Claim.parse(_)).sortBy(_.x)
+  val overlaps = Day3.Claim.findOverlapsAll(claims)
 }
 
 object Day3 {
@@ -18,15 +19,19 @@ object Day3 {
       val pieces = s.split(" ")
       val coord = pieces(2).replace(":", "").split(",")
       val dim = pieces(3).split("x")
-      Claim(pieces(0), coord(0).toInt, coord(1).toInt, dim(0).toInt, dim(1).toInt)
+      Claim(pieces(0),
+            coord(0).toInt,
+            coord(1).toInt,
+            dim(0).toInt,
+            dim(1).toInt)
     }
 
-    // find overlaps among all claims
-    def findOverlapsAll(overlaps: Set[(Int, Int)],
-                        remaining: Seq[Claim]): Set[(Int, Int)] = {
-      val newOverlaps = findOverlaps(overlaps, remaining.head, remaining.tail)
+    // find overlaps among all claims; assumes remaining is sorted by x
+    def findOverlapsAll(remaining: Seq[Claim],
+                        acc: Set[(Int, Int)] = Set[(Int, Int)]()): Set[(Int, Int)] = {
+      val newOverlaps = acc ++ findOverlaps(remaining.head, remaining.tail)
       if (remaining.size > 1) {
-        findOverlapsAll(newOverlaps, remaining.tail)
+        findOverlapsAll(remaining.tail, newOverlaps)
       } else {
         newOverlaps
       }
@@ -34,22 +39,28 @@ object Day3 {
 
     // find overlaps between claim and the claims in remaining
     // returns set of coordinates, each representing a sq inch
-    def findOverlaps(overlaps: Set[(Int, Int)],
-                     claim: Claim,
-                     remaining: Seq[Claim]): Set[(Int, Int)] = {
+    def findOverlaps(
+        claim: Claim,
+        remaining: Seq[Claim],
+        acc: Set[(Int, Int)] = Set[(Int, Int)]()): Set[(Int, Int)] = {
       if (remaining.size > 0) {
         val c1 = claim
         val c2 = remaining.head
-        val c1xvalues = c1.x.to(c1.x + c1.width - 1).toSet
-        val c2xvalues = c2.x.to(c2.x + c2.width - 1).toSet
-        val c1yvalues = c1.y.to(c1.y + c1.height - 1).toSet
-        val c2yvalues = c2.y.to(c2.y + c2.height - 1).toSet
-        val xOverlap = c1xvalues.intersect(c2xvalues)
-        val yOverlap = c1yvalues.intersect(c2yvalues)
-        val newOverlaps = xOverlap.flatMap(x => yOverlap.map(y => (x, y)))
-        findOverlaps(overlaps.union(newOverlaps), claim, remaining.tail)
+        // since input is sorted, we can stop when x no longer overlaps
+        if (c2.x <= c1.x + c1.width - 1) {
+          val c1xvalues = c1.x.to(c1.x + c1.width - 1).toSet
+          val c2xvalues = c2.x.to(c2.x + c2.width - 1).toSet
+          val c1yvalues = c1.y.to(c1.y + c1.height - 1).toSet
+          val c2yvalues = c2.y.to(c2.y + c2.height - 1).toSet
+          val xOverlap = c1xvalues.intersect(c2xvalues)
+          val yOverlap = c1yvalues.intersect(c2yvalues)
+          val newOverlaps = xOverlap.flatMap(x => yOverlap.map(y => (x, y)))
+          findOverlaps(claim, remaining.tail, acc ++ newOverlaps)
+        } else {
+          acc
+        }
       } else {
-        overlaps
+        acc
       }
     }
 
