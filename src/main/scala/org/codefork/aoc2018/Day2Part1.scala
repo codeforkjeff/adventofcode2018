@@ -5,6 +5,14 @@ import scala.io.Source
 object Day2Part1 {
   type LetterCounts = Map[Char, Int]
 
+  case class BoxId(id: String) {
+    def getLetterCounts: Map[Char, Int] =
+      id.foldLeft(Map[Char, Int]()) { (counts, letter) =>
+        counts + (letter -> (counts.getOrElse(letter, 0) + 1))
+      }
+
+  }
+
   def main(args: Array[String]) = {
     val url = getClass.getResource("/day2/input.txt")
     val s = Source.fromURL(url)
