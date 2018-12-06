@@ -42,7 +42,7 @@ object Day2Part2 extends Part {
 
   override def answer: String = {
     val url = getClass.getResource("/day2/input.txt")
-    searchAll("", Source.fromURL(url).getLines().toSeq).replace("#", "")
+    searchAll("", Source.fromURL(url).getLines().toSeq)
   }
 
 }
