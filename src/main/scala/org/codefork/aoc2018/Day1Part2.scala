@@ -36,12 +36,13 @@ case class Device(val seenFreq: Set[Int],
   }
 }
 
-object Day1Part2 {
+object Day1Part2 extends Part {
 
-  def main(args: Array[String]) = {
+  def main(args: Array[String])= println(answer)
+
+  override def answer: String = {
     val device = Device(Set[Int](0), 0, None)
     val deviceResult = device.calibrateUntilFreqRepeats
-    println(deviceResult.firstFreqReachedTwice)
+    deviceResult.firstFreqReachedTwice.get.toString
   }
-
 }

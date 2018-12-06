@@ -2,7 +2,7 @@ package org.codefork.aoc2018
 
 import scala.io.Source
 
-object Day2Part1 {
+object Day2Part1 extends Part {
   type LetterCounts = Map[Char, Int]
 
   case class BoxId(id: String) {
@@ -13,7 +13,9 @@ object Day2Part1 {
 
   }
 
-  def main(args: Array[String]) = {
+  def main(args: Array[String]) = println(answer)
+
+  override def answer: String = {
     val url = getClass.getResource("/day2/input.txt")
     val s = Source.fromURL(url)
     val boxIdCounts = s
@@ -25,8 +27,7 @@ object Day2Part1 {
             acc + (letterCount -> (acc.getOrElse(letterCount, 0) + 1))
           }
       }
-    val checksum = boxIdCounts(2) * boxIdCounts(3)
-    println(s"checksum: $checksum")
+    (boxIdCounts(2) * boxIdCounts(3)).toString
   }
 
   // returns set of unique letter frequency counts

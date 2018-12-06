@@ -1,8 +1,10 @@
 package org.codefork.aoc2018
 
-object Day4Part1 {
+object Day4Part1 extends Part {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =println(answer)
+
+  override def answer: String = {
     val shifts = Day4.getShifts
 
     val grouped = shifts.groupBy(_.guardId)
@@ -39,7 +41,7 @@ object Day4Part1 {
       ._1
     //println(s"most freq min: $mostFrequencyMinute")
 
-    val answer = guardId * mostFrequencyMinute
-    println(answer)
+    (guardId * mostFrequencyMinute).toString
   }
+
 }

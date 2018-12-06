@@ -2,7 +2,7 @@ package org.codefork.aoc2018
 
 import scala.io.Source
 
-object Day2Part2 {
+object Day2Part2 extends Part {
 
   // return the common chars at each index between id1 and id2
   def commonChars(id1: String, id2: String): String =
@@ -38,10 +38,11 @@ object Day2Part2 {
     }
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = println(answer)
+
+  override def answer: String = {
     val url = getClass.getResource("/day2/input.txt")
-    val common = searchAll("", Source.fromURL(url).getLines().toSeq)
-    println(common)
+    searchAll("", Source.fromURL(url).getLines().toSeq).replace("#", "")
   }
 
 }

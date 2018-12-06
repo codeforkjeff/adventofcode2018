@@ -1,12 +1,14 @@
 package org.codefork.aoc2018
 
-object Day4Part2 {
+object Day4Part2 extends Part {
 
   case class GuardIdMinuteFreq(guardId: Int = -1, minute: Int = -1, freq: Int = -1)
 
   case class MinuteFreq(minute: Int = -1, freq: Int = -1)
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = println(answer)
+
+  override def answer: String = {
     val shifts = Day4.getShifts
 
     val grouped = shifts.groupBy(_.guardId)
@@ -28,7 +30,7 @@ object Day4Part2 {
       }
     }}
 
-    println(result.guardId * result.minute)
+    (result.guardId * result.minute).toString
   }
 
 }
