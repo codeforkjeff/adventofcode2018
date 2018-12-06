@@ -2,8 +2,6 @@ package org.codefork.aoc2018
 
 object Day4Part1 extends Part {
 
-  def main(args: Array[String]): Unit =println(answer)
-
   override def answer: String = {
     val shifts = Day4.getShifts
 

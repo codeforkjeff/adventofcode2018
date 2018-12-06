@@ -4,8 +4,6 @@ object Day5Part2 extends Part {
 
   case class Result(unitRemoved: String = "", resultingLen: Int = Int.MaxValue)
 
-  def main(args: Array[String]): Unit = println(answer)
-
   override def answer: String = {
     val s = Day5.getInputPolymer
     val units = Day5.getDistinctUnits(s)

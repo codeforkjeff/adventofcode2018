@@ -6,8 +6,6 @@ object Day4Part2 extends Part {
 
   case class MinuteFreq(minute: Int = -1, freq: Int = -1)
 
-  def main(args: Array[String]): Unit = println(answer)
-
   override def answer: String = {
     val shifts = Day4.getShifts
 

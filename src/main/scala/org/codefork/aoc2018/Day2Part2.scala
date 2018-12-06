@@ -38,8 +38,6 @@ object Day2Part2 extends Part {
     }
   }
 
-  def main(args: Array[String]): Unit = println(answer)
-
   override def answer: String = {
     val url = getClass.getResource("/day2/input.txt")
     searchAll("", Source.fromURL(url).getLines().toSeq)
