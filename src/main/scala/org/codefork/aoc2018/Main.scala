@@ -13,7 +13,8 @@ object Main {
     Day4Part2,
     Day5Part1,
     Day5Part2,
-    Day6Part1
+    Day6Part1,
+    Day6Part2
   )
 
   def main(args: Array[String]) = {
