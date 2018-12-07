@@ -1,31 +1,9 @@
 package org.codefork.aoc2018
 
 import scala.io.Source
+import Day6.Coord
 
 object Day6Part1 extends Part {
-
-  case class Coord(x: Int,
-                   y: Int,
-                   prevClosestCount: Int = 0,
-                   closestCount: Int = 0) {
-
-    // return all coords at a given dist from this coord
-    def findAtDist(dist: Int): Set[Coord] = {
-      0.to(dist)
-        .flatMap(d =>
-          if (d == dist) {
-            Seq(Coord(x - d, y), Coord(x + d, y))
-          } else {
-            Seq(Coord(x - d, y + (dist - d)),
-                Coord(x - d, y - (dist - d)),
-                Coord(x + d, y + (dist - d)),
-                Coord(x + d, y - (dist - d)))
-        })
-        .toSet
-    }
-
-    def area = closestCount + 1
-  }
 
   /**
     * iterate, increasing dist, keeping track of finite areas (the ones that stop growing)
@@ -92,13 +70,7 @@ object Day6Part1 extends Part {
   }
 
   override def answer: String = {
-    val url = getClass.getResource("/day6/input.txt")
-    val coords = Source
-      .fromURL(url)
-      .getLines()
-      .map(_.split(", "))
-      .map(a => Coord(a(0).toInt, a(1).toInt))
-      .toSeq
+    val coords = Day6.getCoords
 
     // this ceiling is way too high but can't figure out a more reasonable one;
     // dist 86 is last iter we need, but how to determine that?
