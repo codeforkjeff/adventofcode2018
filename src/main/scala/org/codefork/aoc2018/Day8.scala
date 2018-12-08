@@ -54,11 +54,28 @@ object Day8 {
     if (remaining.size == 0) runningTally
     else
       tallyMetadata(remaining.flatMap(n => n.children),
-        runningTally + remaining.foldLeft(0) { (acc, node) =>
+                    runningTally + remaining.foldLeft(0) { (acc, node) =>
+                      {
+                        acc + node.metadata.sum
+                      }
+                    })
+
+  // depth-first traversal
+  def calculateValue(node: Node): Int = {
+    if (node.children.size == 0) {
+      node.metadata.sum
+    } else {
+      // find nodes referenced by metadata
+      val referencedNodes = node.metadata.map(m =>
+        node.children.lift(m - 1)).filter(_.isDefined).map(_.get)
+
+      referencedNodes.foldLeft(0) { (acc, child) =>
         {
-          acc + node.metadata.sum
+          acc + calculateValue(child)
         }
-        })
+      }
+    }
+  }
 
   def getTestData = "2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2"
 
