@@ -1,28 +1,6 @@
 package org.codefork.aoc2018
 
-import scala.io.Source
-
 object Day7Part1 extends Part {
-
-  case class Step(letter: Char, children: Seq[Char]) {}
-
-  def getDependencies = {
-    val url = getClass.getResource("/day7/input.txt")
-    Source
-      .fromURL(url)
-      .getLines()
-      .map(line => (line.charAt(5), line.charAt(36)))
-      .foldLeft(Map[Char, String]()) {
-        case (acc, (from, to)) => {
-          if (acc.contains(from)) {
-            val children = acc(from)
-            acc + (from -> (children + to))
-          } else {
-            acc + (from -> to.toString)
-          }
-        }
-      }
-  }
 
   def orderSteps(candidates: String, deps: Map[Char, String], ordered: String = ""): String = {
     if(candidates.size == 0) {
@@ -41,7 +19,7 @@ object Day7Part1 extends Part {
   }
 
   override def answer: String = {
-    val deps = getDependencies
+    val deps = Day7.getDependencies
     // build initial set
     val initial = deps.keys.toSet.diff(deps.values.flatten.toSet).mkString
     orderSteps(initial, deps)
