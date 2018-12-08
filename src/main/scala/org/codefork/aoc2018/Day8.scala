@@ -23,14 +23,13 @@ object Day8 {
     if (stack.nonEmpty) {
       val node = stack.head
       if (node.numChildren == node.children.size) {
-        val newNode = node.setMetadata(input.take(node.numMetadata))
+        val (metadata, remainingInput) = input.splitAt(node.numMetadata)
+        val newNode = node.setMetadata(metadata)
 
         return if (stack.tail.nonEmpty) {
           // add child to parent if there is one
           val parent = stack.tail.head
           val newParent = parent.addChild(newNode)
-
-          val remainingInput = input.drop(node.numMetadata)
 
           makeTree(remainingInput, newParent +: stack.tail.tail)
         } else {
