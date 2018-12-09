@@ -1,5 +1,7 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
+
 object Day7Part2 extends Part {
 
   case class Task(step: Char, startTime: Int, baseStepTime: Int) {
@@ -50,7 +52,8 @@ object Day7Part2 extends Part {
       (task, workers.patch(i, Seq(newWorker), 1))
     }
 
-    def calculateTime: Int = {
+    @tailrec
+    final def calculateTime: Int = {
       if (steps.size == 0) {
         workers
           .map(w => if (w.tasks.isEmpty) 0 else w.tasks.last.availableAt)

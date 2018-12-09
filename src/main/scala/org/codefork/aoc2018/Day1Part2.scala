@@ -1,5 +1,6 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 case class Device(val seenFreq: Set[Int],
@@ -20,7 +21,8 @@ case class Device(val seenFreq: Set[Int],
     }
   }
 
-  def calibrateUntilFreqRepeats: Device = {
+  @tailrec
+  final def calibrateUntilFreqRepeats: Device = {
     val url = getClass.getResource("/day1/input.txt")
     val s = Source.fromURL(url)
     val result = s

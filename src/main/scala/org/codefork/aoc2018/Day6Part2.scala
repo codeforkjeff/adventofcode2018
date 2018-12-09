@@ -2,6 +2,8 @@ package org.codefork.aoc2018
 
 import org.codefork.aoc2018.Day6.Coord
 
+import scala.annotation.tailrec
+
 object Day6Part2 extends Part {
 
   override def answer: String = {
@@ -17,6 +19,7 @@ object Day6Part2 extends Part {
 
   // expand from seed until all the new candidates found during an iteration no longer
   // meet the criteria of having sum total dist < 10000
+  @tailrec
   def grow(seed: Coord,
            coords: Seq[Coord],
            area: Set[Coord],

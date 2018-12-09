@@ -1,7 +1,10 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
+
 object Day7Part1 extends Part {
 
+  @tailrec
   def orderSteps(candidates: String, deps: Map[Char, String], ordered: String = ""): String = {
     if(candidates.size == 0) {
       ordered

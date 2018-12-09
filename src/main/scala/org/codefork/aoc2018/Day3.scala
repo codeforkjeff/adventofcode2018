@@ -1,5 +1,6 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 class Day3 {
@@ -27,6 +28,7 @@ object Day3 {
     }
 
     // find overlaps among all claims; assumes remaining is sorted by x
+    @tailrec
     def findOverlapsAll(remaining: Seq[Claim],
                         acc: Set[(Int, Int)] = Set[(Int, Int)]()): Set[(Int, Int)] = {
       val newOverlaps = acc ++ findOverlaps(remaining.head, remaining.tail)
@@ -39,6 +41,7 @@ object Day3 {
 
     // find overlaps between claim and the claims in remaining
     // returns set of coordinates, each representing a sq inch
+    @tailrec
     def findOverlaps(
         claim: Claim,
         remaining: Seq[Claim],

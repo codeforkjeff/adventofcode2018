@@ -19,6 +19,16 @@ object Day8 {
 
   }
 
+  def makeNodeFromInput(input: List[Int]): (Node, List[Int]) = {
+    val numChildren = input.head
+    val numMetadata = input.tail.head
+    val node = Node(numChildren, numMetadata)
+
+    val remaining = input.tail.tail
+    (node, remaining)
+  }
+
+  @tailrec
   def makeTree(input: List[Int], stack: List[Node] = List[Node]()): Node = {
     // are we done making children?
     if (stack.nonEmpty) {
@@ -27,7 +37,7 @@ object Day8 {
         val (metadata, remainingInput) = input.splitAt(node.numMetadata)
         val newNode = node.setMetadata(metadata)
 
-        return if (stack.tail.nonEmpty) {
+        if (stack.tail.nonEmpty) {
           // add child to parent if there is one
           val parent = stack.tail.head
           val newParent = parent.addChild(newNode)
@@ -37,17 +47,16 @@ object Day8 {
           // no parent means we've depleted stack; we're done.
           newNode
         }
+      } else {
+        // create node with partial info, push it on stack, recurse
+        val (node, remaining) = makeNodeFromInput(input)
+        makeTree(remaining, node +: stack)
       }
+    } else {
+      // create node with partial info, push it on stack, recurse
+      val (node, remaining) = makeNodeFromInput(input)
+      makeTree(remaining, node +: stack)
     }
-
-    // create node with partial info, push it on stack, recurse
-    val numChildren = input.head
-    val numMetadata = input.tail.head
-    val node = Node(numChildren, numMetadata)
-
-    val remaining = input.tail.tail
-
-    makeTree(remaining, node +: stack)
   }
 
   def tallyMetadata(remaining: Seq[Node], runningTally: Int = 0): Int =

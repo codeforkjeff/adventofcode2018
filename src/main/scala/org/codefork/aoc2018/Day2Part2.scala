@@ -1,5 +1,6 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 object Day2Part2 extends Part {
@@ -13,6 +14,7 @@ object Day2Part2 extends Part {
 
   // search in remainder for item that is diff by 1 char from id,
   // returning the chars they have in common
+  @tailrec
   def search(id: String, remainder: Seq[String]): Option[String] = {
     if(remainder.nonEmpty) {
       val id2 = remainder.head
@@ -29,6 +31,7 @@ object Day2Part2 extends Part {
   }
 
   // exhaustive search comparing every id to every other id
+  @tailrec
   def searchAll(id: String, remainder: Seq[String]): String = {
     val result = search(id, remainder)
     if(result.isEmpty) {

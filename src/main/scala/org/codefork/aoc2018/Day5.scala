@@ -1,5 +1,6 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 object Day5 {
@@ -9,6 +10,7 @@ object Day5 {
     Source.fromURL(url).mkString.stripLineEnd
   }
 
+  @tailrec
   def reactPolymerSlow(s: String, pos: Int = 0): String = {
     if (pos == s.length - 1) {
       s
@@ -28,6 +30,7 @@ object Day5 {
   }
 
   // slow version = ~1100ms for part 1 input; this version using list as stack takes ~60ms
+  @tailrec
   def reactPolymer(s: String, reacted: List[Char] = List[Char](), pos: Int = 0): String = {
     if (pos == s.length) {
       reacted.mkString.reverse
