@@ -1,5 +1,6 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
 import scala.collection.immutable.Queue
 import scala.io.Source
 
@@ -59,19 +60,23 @@ object Day8 {
                       }
                     })
 
-  // depth-first traversal
-  def calculateValue(node: Node): Int = {
-    if (node.children.size == 0) {
-      node.metadata.sum
-    } else {
-      // find nodes referenced by metadata
-      val referencedNodes = node.metadata.map(m =>
-        node.children.lift(m - 1)).filter(_.isDefined).map(_.get)
-
-      referencedNodes.foldLeft(0) { (acc, child) =>
-        {
-          acc + calculateValue(child)
-        }
+  @tailrec
+  def calculateValue(toVisit: Seq[Node], acc: Int = 0): Int = {
+    if (toVisit.isEmpty)
+      acc
+    else {
+      // pop node from toVisit and add its value to acc if it has no children,
+      // otherwise push children referenced by metadata and recurse
+      val node = toVisit.head
+      val remainingToVisit = toVisit.tail
+      if (node.children.isEmpty) {
+        return calculateValue(remainingToVisit, acc + node.metadata.sum)
+      } else {
+        val referencedNodes = node.metadata
+          .map(m => node.children.lift(m - 1))
+          .filter(_.isDefined)
+          .map(_.get)
+        return calculateValue(remainingToVisit ++ referencedNodes, acc)
       }
     }
   }
