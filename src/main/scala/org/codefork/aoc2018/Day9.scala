@@ -9,6 +9,37 @@ object Day9 {
 
     def findHighestScore: Int = calculateFinalScores().values.max
 
+    // avoid creating/updating expensive circle data structure for every single turn;
+    // just iterate on score-generating turns
+    @tailrec
+    final def calculateFinalScoresQuick(
+        marbleToPlay: Int = 23,
+        scores: Map[Int, Int] = Map.empty): Map[Int, Int] = {
+//      if (marbleToPlay >= lastMarblePoints) {
+      if (marbleToPlay >= 1000) {
+        scores
+      } else {
+        // TODO: figure out what marble is removed
+        val marbleAtCounterClockwise7 = 0
+
+        // new current marble is at position -6 of marbleToPlay, which is always marble's value - 4
+        val currentMarble = marbleToPlay - 4
+
+        val score = marbleToPlay + marbleAtCounterClockwise7
+
+        val player = (marbleToPlay - 1) % numPlayers
+
+        val newScores = scores + (player -> (scores.getOrElse(player, 0) + score))
+
+        println(
+          "player " + player + " scored " + score + " with marble " + marbleToPlay)
+        println(
+          "index at -7 = " + 0 + ", marble = " + marbleAtCounterClockwise7 + " newCurrent=" + currentMarble)
+
+        calculateFinalScoresQuick(marbleToPlay + 23, newScores)
+      }
+    }
+
     // player is 0-indexed instead of 1-indexed as in example
     @tailrec
     final def calculateFinalScores(player: Int = 0,
@@ -37,8 +68,11 @@ object Day9 {
 
           val newCircle = circle.patch(indexToRemove, List.empty, 1)
 
-          println("player " + player + " scored " + score + " with marble " + toPlace)
-          println("index at -7 = " + indexToRemove + ", marble = " + circle(indexToRemove) + " newCurrent=" + newCircle(indexToRemove))
+          println(
+            "player " + player + " scored " + score + " with marble " + toPlace)
+          println(
+            "index at -7 = " + indexToRemove + ", marble = " + circle(
+              indexToRemove) + " newCurrent=" + newCircle(indexToRemove))
 
           //println(player, newCircle)
 
