@@ -21,19 +21,20 @@ object Day10 {
 
     def nextSecond =
       copy(coords = coords.map(_.move), t+1)
-  }
 
-  def findLetters(coordSet: CoordSet, lastSetOpt: Option[CoordSet] = None): (String, CoordSet) = {
-    // height initially shrinks; when it starts growing again, the last coordset is the answer
-    if (lastSetOpt.isDefined && coordSet.height > lastSetOpt.get.height) {
-      val lastSet = lastSetOpt.get
-
-      val text = lastSet.minY.to(lastSet.maxY).foldLeft("") { (grid, y) =>
-        grid + lastSet.minX.to(lastSet.maxX).foldLeft("") { (line, x) =>
-          line + (if (lastSet.set.contains((x, y))) "#" else ".")
+    def render: String =
+      minY.to(maxY).foldLeft("") { (grid, y) =>
+        grid +minX.to(maxX).foldLeft("") { (line, x) =>
+          line + (if (set.contains((x, y))) "#" else ".")
         } + "\n"
       }
-      (text, lastSet)
+
+  }
+
+  def findLetters(coordSet: CoordSet, lastSetOpt: Option[CoordSet] = None): CoordSet = {
+    // height initially shrinks; when it starts growing again, the last coordset is the answer
+    if (lastSetOpt.isDefined && coordSet.height > lastSetOpt.get.height) {
+      lastSetOpt.get
     } else {
       findLetters(coordSet.nextSecond, Some(coordSet))
     }
