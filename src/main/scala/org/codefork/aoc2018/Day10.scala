@@ -1,5 +1,6 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
 import scala.io.Source
 
 object Day10 {
@@ -20,26 +21,26 @@ object Day10 {
     val set = coords.map(c => (c.x, c.y))
 
     def nextSecond =
-      copy(coords = coords.map(_.move), t+1)
+      copy(coords = coords.map(_.move), t + 1)
 
     def render: String =
       minY.to(maxY).foldLeft("") { (grid, y) =>
-        grid +minX.to(maxX).foldLeft("") { (line, x) =>
+        grid + minX.to(maxX).foldLeft("") { (line, x) =>
           line + (if (set.contains((x, y))) "#" else ".")
         } + "\n"
       }
 
-  }
+    @tailrec
+    final def findLetters(coordSet: CoordSet = this,
+                          lastSetOpt: Option[CoordSet] = None): CoordSet =
+      // height initially shrinks; when it starts growing again, the last coordset is the answer
+      if (lastSetOpt.isDefined && coordSet.height > lastSetOpt.get.height) {
+        lastSetOpt.get
+      } else {
+        findLetters(coordSet.nextSecond, Some(coordSet))
+      }
 
-  def findLetters(coordSet: CoordSet, lastSetOpt: Option[CoordSet] = None): CoordSet = {
-    // height initially shrinks; when it starts growing again, the last coordset is the answer
-    if (lastSetOpt.isDefined && coordSet.height > lastSetOpt.get.height) {
-      lastSetOpt.get
-    } else {
-      findLetters(coordSet.nextSecond, Some(coordSet))
-    }
   }
-
 
   case class Coord(x: Int, y: Int, vx: Int, vy: Int) {
     def atSecond(sec: Int) = {
