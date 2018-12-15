@@ -31,10 +31,10 @@ object Day9 {
 
         val newScores = scores + (player -> (scores.getOrElse(player, 0) + score))
 
-        println(
-          "player " + player + " scored " + score + " with marble " + marbleToPlay)
-        println(
-          "index at -7 = " + 0 + ", marble = " + marbleAtCounterClockwise7 + " newCurrent=" + currentMarble)
+//        println(
+//          "player " + player + " scored " + score + " with marble " + marbleToPlay)
+//        println(
+//          "index at -7 = " + 0 + ", marble = " + marbleAtCounterClockwise7 + " newCurrent=" + currentMarble)
 
         calculateFinalScoresQuick(marbleToPlay + 23, newScores)
       }
@@ -68,11 +68,11 @@ object Day9 {
 
           val newCircle = circle.patch(indexToRemove, List.empty, 1)
 
-          println(
-            "player " + player + " scored " + score + " with marble " + toPlace)
-          println(
-            "index at -7 = " + indexToRemove + ", marble = " + circle(
-              indexToRemove) + " newCurrent=" + newCircle(indexToRemove))
+//          println(
+//            "player " + player + " scored " + score + " with marble " + toPlace)
+//          println(
+//            "index at -7 = " + indexToRemove + ", marble = " + circle(
+//              indexToRemove) + " newCurrent=" + newCircle(indexToRemove))
 
           //println(player, newCircle)
 

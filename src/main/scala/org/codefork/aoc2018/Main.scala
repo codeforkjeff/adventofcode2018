@@ -20,16 +20,28 @@ object Main {
     Day8Part1,
     Day8Part2,
     Day9Part1,
+    Day9Part2,
     Day10Part1,
-    Day10Part2
+    Day10Part2,
+    Day11Part1,
+    Day11Part2,
+    Day12Part1
   )
 
   def main(args: Array[String]) = {
     val filtered =
-      if (args.nonEmpty) { parts.filter(p => args.contains(Part.getClassName(p))) } else
+      if (args.nonEmpty) { parts.filter(p => args.contains(p.getClassName)) } else
         parts
     filtered.foreach(part => {
-      part.run()
+      if (part.status == Incomplete) {
+        println(part.getClassName + ": INCOMPLETE, skipping")
+      } else {
+        if (part.status == NeedsOptimization) {
+          println(
+            part.getClassName + ": WARNING, needs optimization, this may take awhile")
+        }
+        part.run()
+      }
     })
   }
 

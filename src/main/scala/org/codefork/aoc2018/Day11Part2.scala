@@ -2,6 +2,8 @@ package org.codefork.aoc2018
 
 object Day11Part2 extends Part {
 
+  override def status = NeedsOptimization
+
   override def answer: String = {
     val width = 300
     val height = 300

@@ -1,18 +1,23 @@
 package org.codefork.aoc2018
 
-object Part {
-  def getClassName(o: Object) =
-    o.getClass.getSimpleName.replace("$", "")
-}
+sealed trait Status
+case object Finished extends Status
+case object NeedsOptimization extends Status
+case object Incomplete extends Status
 
 trait Part {
+
+  def getClassName =
+    getClass.getSimpleName.replace("$", "")
+
+  def status: Status = Finished
 
   def answer: String
 
   def main(args: Array[String]): Unit = run()
 
   def run(): Unit = {
-    val name = Part.getClassName(this)
+    val name = getClassName
     val t0 = System.currentTimeMillis()
     val answerValue = answer
     val t1 = System.currentTimeMillis()
