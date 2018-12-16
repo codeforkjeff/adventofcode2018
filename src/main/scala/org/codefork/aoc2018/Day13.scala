@@ -115,35 +115,59 @@ object Day13 {
                     carts: Set[Cart] = Set.empty,
                     collisions: Seq[XY] = Seq.empty) {
 
-    def moveCarts = {
-      val newSystem = carts.toSeq
-        .sortBy(c => (c.trackSegment.xy.y, c.trackSegment.xy.x))
-        .foldLeft(this) { (acc, cart) =>
-          {
-            val nextXy = cart.headed match {
-              case '<' => cart.trackSegment.xy.left
-              case '^' => cart.trackSegment.xy.up
-              case '>' => cart.trackSegment.xy.right
-              case 'v' => cart.trackSegment.xy.down
-            }
-            val nextSegment = segments(nextXy)
-            val newDir = nextSegment.changeCartDirection(cart)
-            val newNextTurn = nextSegment.updateNextTurn(cart)
-            val newCart = cart.copy(nextSegment, newDir, newNextTurn)
-
-            // update any collisions that happen after a single cart moves
-            val updatedCarts = (acc.carts - cart) + newCart
-            val collision = getCollision(updatedCarts)
-            val updatedCollisions = acc.collisions ++
-              (if(collision.isDefined) Seq(collision.get) else Seq.empty)
-
-            acc.copy(carts = updatedCarts, collisions = updatedCollisions)
-          }
-        }
-      newSystem
+    def moveCarts(removeColliding: Boolean = false): System = {
+      doMoveCarts(removeColliding,
+                  carts.toSeq
+                    .sortBy(c => (c.trackSegment.xy.y, c.trackSegment.xy.x)))
     }
 
-    def getCollision(carts: Set[Cart]): Option[XY]  = {
+    // if removeColliding is true, collisions are removed from 'remaining'
+    // on each recursive iteration; otherwise, this function just works through them all
+    @tailrec
+    final def doMoveCarts(removeColliding: Boolean = false,
+                          remaining: Seq[Cart]): System = {
+      if (remaining.isEmpty) {
+        this
+      } else {
+        val cart = remaining.head
+        val more = remaining.tail
+
+        //println("moving cart " + cart)
+        val nextXy = cart.headed match {
+          case '<' => cart.trackSegment.xy.left
+          case '^' => cart.trackSegment.xy.up
+          case '>' => cart.trackSegment.xy.right
+          case 'v' => cart.trackSegment.xy.down
+        }
+        val nextSegment = segments(nextXy)
+        val newDir = nextSegment.changeCartDirection(cart)
+        val newNextTurn = nextSegment.updateNextTurn(cart)
+        val newCart = cart.copy(nextSegment, newDir, newNextTurn)
+
+        // update any collisions that happen after a single cart moves
+        val updatedCarts = (carts - cart) + newCart
+
+        val collision = getCollision(updatedCarts)
+
+        val updatedCollisions = collisions ++
+          (if (collision.isDefined) Seq(collision.get) else Seq.empty)
+
+        val newCarts =
+          if (removeColliding && collision.isDefined)
+            updatedCarts.filterNot(c => (c.trackSegment.xy == collision.get))
+          else updatedCarts
+
+        val newRemaining =
+          if (removeColliding && collision.isDefined)
+            more.filterNot(c => (c.trackSegment.xy == collision.get))
+          else more
+
+        val newSystem = copy(carts = newCarts, collisions = updatedCollisions)
+        newSystem.doMoveCarts(removeColliding, newRemaining)
+      }
+    }
+
+    def getCollision(carts: Set[Cart]): Option[XY] = {
       val headOpt = carts
         .groupBy(_.trackSegment.xy)
         .find { case (_, grouped) => grouped.size > 1 }
@@ -155,11 +179,20 @@ object Day13 {
 
     @tailrec
     final def findFirstCollision: XY = {
-      val newSystem = moveCarts
-      if(newSystem.collisions.nonEmpty)
+      val newSystem = moveCarts()
+      if (newSystem.collisions.nonEmpty)
         newSystem.collisions.head
       else
         newSystem.findFirstCollision
+    }
+
+    @tailrec
+    final def findLastRemainingCart: XY = {
+      val newSystem = moveCarts(true)
+      if (newSystem.carts.size == 1)
+        newSystem.carts.head.trackSegment.xy
+      else
+        newSystem.findLastRemainingCart
     }
 
   }
@@ -188,9 +221,7 @@ object Day13 {
             Straight(xy, Set(xy.up, xy.down))
           } else if (ch == '\\') {
             val outlets =
-              if (grid.getOrElse(xy.up, ' ') == '+' || grid.getOrElse(
-                    xy.up,
-                    ' ') == '|') {
+              if (Set('+', '|', '^', 'v').contains(grid.getOrElse(xy.up, ' '))) {
                 Set(xy.up, xy.right)
               } else {
                 Set(xy.down, xy.left)
@@ -198,9 +229,7 @@ object Day13 {
             Curve(xy, outlets)
           } else if (ch == '/') {
             val outlets =
-              if (grid.getOrElse(xy.up, ' ') == '+' || grid.getOrElse(
-                    xy.up,
-                    ' ') == '|') {
+              if (Set('+', '|', '^', 'v').contains(grid.getOrElse(xy.up, ' '))) {
                 Set(xy.up, xy.left)
               } else {
                 Set(xy.down, xy.right)
@@ -234,4 +263,10 @@ object Day13 {
     val url = getClass.getResource("/day13/testData.txt")
     Source.fromURL(url).getLines().toSeq
   }
+
+  def getTestData2 = {
+    val url = getClass.getResource("/day13/testData2.txt")
+    Source.fromURL(url).getLines().toSeq
+  }
+
 }
