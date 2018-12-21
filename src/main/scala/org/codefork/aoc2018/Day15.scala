@@ -14,10 +14,7 @@ object Day15 {
   }
 
   // 'Unit' is a reserved word in scala so we use Person
-  case class Person(xy: XY,
-                    personType: Char,
-                    id: String,
-                    hp: Int = 200)
+  case class Person(xy: XY, personType: Char, id: String, hp: Int = 200)
       extends Thing {
     def isPerson = true
     def isOpenSpace = false
@@ -47,7 +44,7 @@ object Day15 {
         xy =>
           field(xy) match {
             case Person(_, _, _, _) => true
-            case _                     => false
+            case _                  => false
         }
       )
       .sortBy(xy => (xy.y, xy.x))
@@ -103,7 +100,8 @@ object Day15 {
         if (personOpt.isDefined) {
           val person = personOpt.get
           val (battlefieldAfterMove, moved) = move(person)
-          val newBattlefield = battlefieldAfterMove.attack(moved, elfAttackPower)
+          val newBattlefield =
+            battlefieldAfterMove.attack(moved, elfAttackPower)
           newBattlefield.doRound(queue.tail, elfAttackPower)
         } else {
           // this happens when a person dies during a round before it's their turn
@@ -134,7 +132,7 @@ object Day15 {
       val enemies = adjacentEnemies(person)
       if (enemies.nonEmpty) {
         val target = enemies.minBy(e => (e.hp, e.xy.y, e.xy.x))
-        val attackPower = if(person.personType == 'E') elfAttackPower else 3
+        val attackPower = if (person.personType == 'E') elfAttackPower else 3
         val attacked = target.copy(hp = target.hp - attackPower)
         val replace = if (attacked.hp <= 0) Empty(attacked.xy) else attacked
         copy(field + (attacked.xy -> replace))
@@ -152,7 +150,7 @@ object Day15 {
       // TODO: this is super slow
       val shortestPaths =
         targets
-          // 'in range' = open sq adjacent to targets
+        // 'in range' = open sq adjacent to targets
           .flatMap(target => openAdjacent(target.xy))
           .map(
             inRange => {
@@ -214,13 +212,14 @@ object Day15 {
 
     @tailrec
     final def find: Option[PathResult] = {
-      val intersect = destinations.intersect(distances.values.flatten.toSet)
+      val covered = distances.values.flatten.toSet
+      val intersect = destinations.intersect(covered)
       if (intersect.nonEmpty) {
         Some(PathResult(inRangeXy, intersect.minBy(xy => (xy.y, xy.x)), d))
       } else {
         val adjToLastD =
           distances(d).flatMap(xy => battlefield.openAdjacent(xy))
-        val newDistances = adjToLastD.diff(distances.values.flatten.toSet)
+        val newDistances = adjToLastD.diff(covered)
         if (newDistances.nonEmpty)
           copy(d = d + 1, distances = distances + ((d + 1) -> newDistances)).find
         else
