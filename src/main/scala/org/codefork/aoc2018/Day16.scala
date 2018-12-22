@@ -137,8 +137,9 @@ object Day16 {
     })
   }
 
-  // recursively infer by whittling down opcodes already determined with certainty
-  def infer(possibilities: Map[Int, Set[String]]): Map[Int, String] = {
+  // recursively deduce by removing opcodes already determined with certainty
+  // from other sets, until every set has just 1 opcode
+  def deduce(possibilities: Map[Int, Set[String]]): Map[Int, String] = {
 
     val determined = possibilities.values
       .filter(_.size == 1)
@@ -152,7 +153,7 @@ object Day16 {
       }
 
     if (newPossibilities.exists { case (_, opset) => opset.size > 1 }) {
-      infer(newPossibilities)
+      deduce(newPossibilities)
     } else {
       newPossibilities.map { case (opcode, opset) => (opcode -> opset.head) }
     }
@@ -168,7 +169,7 @@ object Day16 {
           acc + (sample.instruction.opcode -> newOps)
         }
       }
-    infer(possibilities)
+    deduce(possibilities)
   }
 
 }
