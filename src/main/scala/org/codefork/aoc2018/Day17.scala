@@ -133,20 +133,13 @@ object Day17 {
 //      println("last=" + last + " xyToTest=" + xyToTest)
 //      display()
 
-      if (xyToTest.y > maxY) {
-        // TODO: this is inefficient: it retraces paths already taken. but it's hard to identify when
-        // a source is "rejoining" paths already taken by other sources because of how the filling code works
+      // did this flow it joins to already existing water flow?
+      val joined = soilAtXY(xyToTest) == MovingWater || soilAtXY(xyToTest) == RestingWater
+
+      if (xyToTest.y > maxY || joined) {
         if (sourcesToDo.nonEmpty) {
-          val candidates = sourcesToDo.diff(sourcesDone)
-          if (candidates.nonEmpty) {
-            val nextSource = candidates.head
-            //println("DOING NEXT SOURCE=" + nextSource + " remaining sources = " + candidates.tail)
-            copy(last = nextSource,
-                 sourcesToDo = candidates.tail,
-                 sourcesDone = sourcesDone :+ nextSource).flow
-          } else {
-            this
-          }
+          //println("DOING NEXT SOURCE=" + sourcesToDo.head + " remaining sources = " + sourcesToDo.tail)
+          copy(last = sourcesToDo.head, sourcesToDo = sourcesToDo.tail).flow
         } else {
           this
         }
@@ -193,7 +186,13 @@ object Day17 {
             sourcesToDo
           }
 
-          copy(scan ++ fill, last = newLast, sourcesToDo = newSources).flow
+          // clear the moving water at 'last' because we're moving back up;
+          // this is needed in order for the check for joining existing water to work
+          val reset = if (atRest) {
+            Map(last -> Sand)
+          } else Map.empty
+
+          copy(scan ++ fill ++ reset, last = newLast, sourcesToDo = newSources).flow
         } else {
           // keep flowing down
           copy(scan + (xyToTest -> MovingWater), last = xyToTest).flow
