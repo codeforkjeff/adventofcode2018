@@ -36,7 +36,9 @@ object Main {
     Day16Part1,
     Day16Part2,
     Day17Part1,
-    Day17Part2
+    Day17Part2,
+    Day18Part1,
+    Day18Part2
   )
 
   def main(args: Array[String]) = {
