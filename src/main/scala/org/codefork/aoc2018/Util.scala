@@ -9,4 +9,7 @@ object Util {
   // replace the last item in a Seq
   def replaceLast[A](s: Seq[A], replacement: A) = s.patch(s.size - 1, Seq(replacement), 1)
 
+  def crossProduct[A](a: Seq[A], b: Seq[A]): Seq[(A,A)] =
+    a.flatMap(x => b.map(y => (x, y)))
+
 }
