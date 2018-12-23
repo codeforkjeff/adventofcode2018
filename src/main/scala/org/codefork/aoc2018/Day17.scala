@@ -80,8 +80,7 @@ object Day17 {
                        minY: Int,
                        maxY: Int,
                        last: XY,
-                       sourcesToDo: List[XY] = List.empty,
-                       sourcesDone: List[XY] = List.empty) {
+                       sourcesToDo: List[XY] = List.empty) {
 
     def soilAtXY(xy: XY): Char =
       scan.getOrElse(xy, Sand)
@@ -176,7 +175,8 @@ object Day17 {
             last.move(Up)
           }
 
-          val newSources = if (!atRest) {
+          val newSourcesTodo = if (!atRest) {
+            // queue the path not taken
             val rightSide =
               if (contentToLeft != Clay && contentToRight != Clay)
                 List(XY(xValuesForFill.last, xyToTest.y))
@@ -192,7 +192,7 @@ object Day17 {
             Map(last -> Sand)
           } else Map.empty
 
-          copy(scan ++ fill ++ reset, last = newLast, sourcesToDo = newSources).flow
+          copy(scan ++ fill ++ reset, last = newLast, sourcesToDo = newSourcesTodo).flow
         } else {
           // keep flowing down
           copy(scan + (xyToTest -> MovingWater), last = xyToTest).flow
