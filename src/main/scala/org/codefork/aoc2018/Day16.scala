@@ -51,6 +51,11 @@ object Day16 {
     def eqrr(a: Int, b: Int, c: Int): Registers =
       set(c, if (get(a) == get(b)) 1 else 0)
 
+    def execute(instruction: NInstruction) = {
+      val op = getOpByName(instruction.op)
+      op(instruction.a, instruction.b, instruction.c)
+    }
+
     def getOpsMatchingResult(instruction: Instruction,
                              /*opcode: Int,
                              argA: Int,
@@ -90,7 +95,11 @@ object Day16 {
 
   }
 
+  // this was used in day 16
   case class Instruction(opcode: Int, a: Int, b: Int, c: Int)
+
+  // this is for day 19: "named" instruction
+  case class NInstruction(op: String, a: Int, b: Int, c: Int)
 
   case class Sample(instruction: Instruction,
                     before: Registers,
