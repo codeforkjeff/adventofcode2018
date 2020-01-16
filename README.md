@@ -1,9 +1,15 @@
 
 # Advent of Code 2018
 
-See https://adventofcode.com
+See https://adventofcode.com/2018
 
 These are my solutions, written in Scala, using IntelliJ.
+
+Post-mortem: I got as far as day 22 out of 25 and ran out of steam.
+It was still a lot of fun, not only to figure out the solutions
+but to try to write them in as Scala-esque a fashion as possible.
+I especially learned a great deal about effectively using recursion and
+case classes.
 
 ## Running it
 
