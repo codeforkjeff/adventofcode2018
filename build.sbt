@@ -1,7 +1,14 @@
-name := "adventofcode2018"
+val scala3Version = "3.2.0"
 
-version := "0.1"
+lazy val root = project
+  .in(file("."))
+  .settings(
+    name := "adventofcode2018",
+    version := "0.1.0-SNAPSHOT",
 
-scalaVersion := "2.12.7"
+    scalaVersion := scala3Version,
 
-enablePlugins(JavaAppPackaging)
+    libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test,
+
+    assembly / mainClass := Some("org.codefork.aoc2018.Main")
+  )
