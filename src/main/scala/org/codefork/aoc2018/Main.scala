@@ -53,15 +53,18 @@ object Main {
       if (args.nonEmpty) { parts.filter(p => args.contains(p.getClassName)) } else
         parts
     filtered.foreach(part => {
-      if (part.status == Incomplete) {
-        println(part.getClassName + ": INCOMPLETE, skipping")
-      } else {
-        if (part.status == NeedsOptimization) {
+      part.status match
+        case Incomplete => {
+          println(part.getClassName + ": INCOMPLETE, skipping")
+        }
+        case NeedsOptimization => {
           println(
             part.getClassName + ": WARNING, needs optimization, this may take awhile")
+          part.run()
         }
-        part.run()
-      }
+        case Finished => {
+          part.run()
+        }
     })
   }
 

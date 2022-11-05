@@ -6,7 +6,7 @@ object Day9Part1 extends Part {
     //val input = getTestData
     val input = Day9.getInputData
     val matches = raw"\d+".r.findAllMatchIn(input).toList.map(_.toString.toInt)
-    Day9.Game(matches(0), matches(1)).findHighestScore.toString
+    Day9.Game(matches(0), matches(1)).calculateFinalScoresCDLL().findHighestScore.toString
   }
 
 }
