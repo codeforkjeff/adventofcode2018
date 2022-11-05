@@ -42,7 +42,7 @@ object Day22 {
     final def calculateErosionLevels(
         xy: XY = XY(0, 0),
         acc: Map[XY, Long] = Map.empty[XY, Long]): Map[XY, Long] = {
-      val geologicLevel =
+      val geologicLevel: Long =
         if ((xy.x == 0 && xy.y == 0) ||
             (xy.x == target.x && xy.y == target.y)) {
           0

@@ -16,7 +16,7 @@ You can also run the code from the command line. Install
 build the project by running:
 
 ```
-sbt stage
+sbt assembly
 ```
 
 To generate and display the solutions (including elapsed time):

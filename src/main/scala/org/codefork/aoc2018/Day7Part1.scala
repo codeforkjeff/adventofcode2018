@@ -13,7 +13,7 @@ object Day7Part1 extends Part {
       val nextStep = sorted.head
       val remainingCandidates = sorted.tail
       // remove nextStep from deps
-      val newDeps = deps.filterKeys(_ != nextStep)
+      val newDeps = deps.filter(_(0) != nextStep).toMap
       // only add children if nothing else is blocking child
       val children = deps.getOrElse(nextStep, "").filter(s =>
         !newDeps.values.mkString.contains(s))
