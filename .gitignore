@@ -69,3 +69,5 @@ fabric.properties
 project/target
 target
 .attach_pid*
+
+.bsp/
