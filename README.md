@@ -23,11 +23,11 @@ To generate and display the solutions (including elapsed time):
 
 ```sh
 # all the solutions
-./target/universal/stage/bin/main
+java -jar target/scala-3.2.0/adventofcode2018-assembly-0.1.0-SNAPSHOT.jar
 
 # just the solution for Day5Part1
-./target/universal/stage/bin/main Day5Part1
+java -jar target/scala-3.2.0/adventofcode2018-assembly-0.1.0-SNAPSHOT.jar Day5Part1
 
 # multiple solutions
-./target/universal/stage/bin/main Day5Part1 Day5Part2
+java -jar target/scala-3.2.0/adventofcode2018-assembly-0.1.0-SNAPSHOT.jar Day5Part1 Day5Part2
 ```
