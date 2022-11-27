@@ -1,8 +1,14 @@
 package org.codefork.aoc2018
 
+import scala.annotation.tailrec
+
 object Day11 {
 
   val INPUT = 7857
+
+  case class Square(x: Int, y: Int, squareSize: Int)
+
+  case class SquarePower(x: Int = 0, y: Int = 0, size: Int = 0, power: Int = 0)
 
   case class Grid(width: Int, height: Int, serialNumber: Int) {
 
@@ -25,8 +31,39 @@ object Day11 {
     def getPowerOfSquare(x: Int, y: Int, squareSize: Int) =
       y.to(y + squareSize - 1).map(y_ => x.to(x + squareSize - 1).map(x_ => grid(x_, y_)).sum).sum
 
+    def getPowerOfSquare(square: Square): Int = getPowerOfSquare(square.x, square.y, square.squareSize)
+
     def getPower3x3(x: Int, y: Int) =
       getPowerOfSquare(x, y, 3)
+
+    /**
+     * calculate power of squares at x,y from size = 1 to largest possible for that coordinate.
+     * we keep increasing size as long as the max possible power at the next size is higher than
+     * the current largest square; otherwise we can short-circuit and stop, saving a lot of calculation time.
+     */
+    @tailrec
+    final def increasingSquares(cur: Square, last: SquarePower, largest: SquarePower): SquarePower = {
+      if (cur.x + cur.squareSize - 1 <= 300 && cur.y + cur.squareSize - 1 <= 300) {
+        val sumOfEdges = cur.x.to(cur.x + cur.squareSize - 1).map(x_ => grid(x_, cur.y + cur.squareSize - 1)).sum +
+          cur.y.to(cur.y + cur.squareSize - 1).map(y_ => grid(cur.x + cur.squareSize - 1, y_)).sum -
+          grid(cur.x + cur.squareSize - 1, cur.y + cur.squareSize - 1)
+        val newPower = last.power + sumOfEdges
+        val newLast = SquarePower(cur.x, cur.y, cur.squareSize, newPower)
+        val newLargest = if (newPower > largest.power) newLast else largest
+        val potentialPowerOfNextSquare = newPower + (4 * (2 * (cur.squareSize + 1) - 1))
+        if (potentialPowerOfNextSquare >= newLargest.power) {
+          increasingSquares(
+            cur = cur.copy(squareSize = cur.squareSize + 1),
+            last = newLast,
+            largest = newLargest)
+        } else {
+          //println(s"stopping at size ${cur}")
+          largest
+        }
+      } else {
+        largest
+      }
+    }
 
     def display() = {
       1.to(height).foreach(y => {
