@@ -1,9 +1,9 @@
 
 # Advent of Code 2018
 
-See https://adventofcode.com
+See https://adventofcode.com/2018
 
-These are my solutions, written in Scala, using IntelliJ.
+These are my solutions, written in Scala, using IntelliJ. Updated Nov 2022 to use Scala 3.2.0.
 
 ## Running it
 
