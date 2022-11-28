@@ -20,8 +20,7 @@ object Day11Part2 extends Part {
     // for this to work, we have to find the largest square for each coord BEFORE comparing
     // to the largest so far in the grid as a whole
     val largest = coords.foldLeft(Day11.SquarePower(1, 1, 1, grid.grid(1,1))) { (largest, xy) => {
-      val start = Day11.SquarePower(xy._1, xy._2, 1, grid.grid(xy._1, xy._2))
-      val largestForCoord = grid.increasingSquares(cur = Day11.Square(xy._1, xy._2, 1), last = start, largest=start)
+      val largestForCoord = grid.findSquareWithHighestPower(xy._1, xy._2)
       if(largestForCoord.power > largest.power) largestForCoord else largest
     }}
 

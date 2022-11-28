@@ -37,8 +37,7 @@ object Day11 {
       getPowerOfSquare(x, y, 3)
 
     /**
-     * calculate power of squares at x,y from size = 1 to largest possible for that coordinate.
-     * we keep increasing size as long as the max possible power at the next size is higher than
+     * recursively increase size as long as the max potential power at the next size is higher than
      * the current largest square; otherwise we can short-circuit and stop, saving a lot of calculation time.
      */
     @tailrec
@@ -63,6 +62,14 @@ object Day11 {
       } else {
         largest
       }
+    }
+
+    /**
+     * calculate power of squares at x,y from size = 1 to largest possible for the coordinate.
+     */
+    def findSquareWithHighestPower(x: Int, y: Int): SquarePower = {
+      val start = Day11.SquarePower(x, x, 1, grid(x, y))
+      increasingSquares(cur = Square(x, y, 1), last = start, largest = start)
     }
 
     def display() = {
