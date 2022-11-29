@@ -6,6 +6,8 @@ object Day11 {
 
   val INPUT = 7857
 
+  val MAX_POWER = 4
+
   case class Square(x: Int, y: Int, squareSize: Int)
 
   case class SquarePower(x: Int = 0, y: Int = 0, size: Int = 0, power: Int = 0)
@@ -42,14 +44,14 @@ object Day11 {
      */
     @tailrec
     final def increasingSquares(cur: Square, last: SquarePower, largest: SquarePower): SquarePower = {
-      if (cur.x + cur.squareSize - 1 <= 300 && cur.y + cur.squareSize - 1 <= 300) {
+      if (cur.x + cur.squareSize - 1 <= width && cur.y + cur.squareSize - 1 <= height) {
         val sumOfEdges = cur.x.to(cur.x + cur.squareSize - 1).map(x_ => grid(x_, cur.y + cur.squareSize - 1)).sum +
           cur.y.to(cur.y + cur.squareSize - 1).map(y_ => grid(cur.x + cur.squareSize - 1, y_)).sum -
           grid(cur.x + cur.squareSize - 1, cur.y + cur.squareSize - 1)
         val newPower = last.power + sumOfEdges
         val newLast = SquarePower(cur.x, cur.y, cur.squareSize, newPower)
         val newLargest = if (newPower > largest.power) newLast else largest
-        val potentialPowerOfNextSquare = newPower + (4 * (2 * (cur.squareSize + 1) - 1))
+        val potentialPowerOfNextSquare = newPower + (MAX_POWER * (2 * (cur.squareSize + 1) - 1))
         if (potentialPowerOfNextSquare >= newLargest.power) {
           increasingSquares(
             cur = cur.copy(squareSize = cur.squareSize + 1),
