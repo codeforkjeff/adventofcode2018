@@ -9,14 +9,15 @@ object Day23 {
     def distanceTo(o: XYZ): Long =
       Math.abs(x - o.x) + Math.abs(y - o.y) + Math.abs(z - o.z)
 
-  }
+    // returns all the coordinates of a box around a point, where corners
+    // are a distance d from coordinate along each axis
+    def containingBox(d: Long): Seq[XYZ] =
+      (z - d).to(z).flatMap(z =>
+        (y - d).to(y).flatMap(y =>
+          (x - d).to(x).map(x => XYZ(x, y, z))
+        )
+      )
 
-  case class Line(pt1: XYZ, pt2: XYZ) {
-//    def points = {
-//      if(pt1.x == pt2.x) {
-//        pt1.x.to
-//      }
-//    }
   }
 
   case class Bot(pos: XYZ, r: Long) {
@@ -38,31 +39,6 @@ object Day23 {
         pos.copy(z = pos.z - r),
         pos.copy(z = pos.z + r)
       )
-
-    def edges: Seq[Line] =
-      Seq(
-        Line(pos.copy(x = pos.x - r), pos.copy(y = pos.y - r)),
-        Line(pos.copy(x = pos.x - r), pos.copy(y = pos.y + r)),
-        Line(pos.copy(x = pos.x - r), pos.copy(z = pos.z - r)),
-        Line(pos.copy(x = pos.x - r), pos.copy(z = pos.z + r)),
-
-        Line(pos.copy(y = pos.y - r), pos.copy(x = pos.x + r)),
-        Line(pos.copy(y = pos.y - r), pos.copy(z = pos.z - r)),
-        Line(pos.copy(y = pos.y - r), pos.copy(z = pos.z + r)),
-
-        Line(pos.copy(y = pos.y + r), pos.copy(x = pos.x + r)),
-        Line(pos.copy(y = pos.y + r) ,pos.copy(z = pos.z - r)),
-        Line(pos.copy(y = pos.y + r) ,pos.copy(z = pos.z + r)),
-
-        Line(pos.copy(z = pos.z - r), pos.copy(x = pos.x + r)),
-        Line(pos.copy(z = pos.z + r), pos.copy(x = pos.x + r))
-      )
-
-//    def allEdgePoints =
-//      edges.map(edge => {
-//
-//      })
-
 
   }
 
