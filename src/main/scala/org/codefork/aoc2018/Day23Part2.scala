@@ -5,25 +5,44 @@ import org.codefork.aoc2018.Day23.{Bot, XYZ}
 import scala.annotation.tailrec
 import scala.collection.immutable.{Map, Seq}
 
+/*
+I tried a number of approaches and couldn't get any of them to work, though some of the answers
+I came up with were pretty close.
+
+The most promising approach started with finding the corner of the diamond-like shape
+with the most bots in range, which turns out to be 874 bots. from there, we can try various methods
+of walking or searching the space between that corner and the origin to find the closest point that's
+still in range of all 874 bots.
+
+The problem is that the space is too large for using brute force. I tried a binary search for points
+along the edges of the cube, which yielded closer points but not the right answer.
+
+Finally, I caved in, found this reddit thread, and implemented the overlapping ranges solution.
+I had considered whether it's useful to calculate the shortest distance to origin of points
+in a bot's range, but didn't actually come up with this solution myself.
+https://www.reddit.com/r/adventofcode/comments/aa9uvg/day_23_aoc_creators_logic/
+
+Eric Wastl said his own solution uses an octree. I should give that more thought and try it.
+*/
 object Day23Part2 extends Part {
 
-  // I tried a number of approaches and couldn't get any of them to work, though some of the answers
-  // I came up with were pretty close.
-  //
-  // The most promising approach started with finding the corner of the diamond-like shape
-  // with the most bots in range, which turns out to be 874 bots. from there, we can try various methods
-  // of walking or searching the space between that corner and the origin to find the closest point that's
-  // still in range of all 874 bots.
-  //
-  // the problem is that the space is too large for using brute force. I tried a binary search for points along
-  // the edges of the cube, which yielded closer points but not the right answer.
-  //
-  // Finally, I caved in, found this reddit thread, and implemented the overlapping ranges solution.
-  // I had considered whether it's useful to calculate the shortest distance to origin of points
-  // in a bot's range, but didn't actually come up with this solution myself.
-  // https://www.reddit.com/r/adventofcode/comments/aa9uvg/day_23_aoc_creators_logic/
-  //
-  // Eric Wastl said his own solution uses an octree. I should give that more thought and try it.
+  val origin = XYZ(0, 0, 0)
+
+  case class Range(low: Long, high: Long) {
+    // calculates the overlap with another range, returning an empty option
+    // if there's no overlap
+    def overlap(otherRange: Range): Option[Range] = {
+      // order ranges by their low bound
+      val r1 = if (low < otherRange.low) this else otherRange
+      val r2 = if (low < otherRange.low) otherRange else this
+      if (r2.low <= r1.high) {
+        val newHigh = if (r2.high < r1.high) r2.high else r1.high
+        Some(Range(r2.low, newHigh))
+      } else {
+        None
+      }
+    }
+  }
 
   // A Corner is a coordinate and a Seq of bots within range of it
   case class Corner(point: XYZ, bot: Bot, inRange: Seq[Bot])
@@ -53,12 +72,6 @@ object Day23Part2 extends Part {
     }
     sortedCorners.head
   }
-
-  // re-use Bot type: it's the same data structure but we're using it
-  // to model an Area in space, not a Bot
-  type Area = Bot
-
-  val origin = XYZ(0,0,0)
 
   // construct a rectilinear cube around each candidate to see if we need to keep testing candidates
   @tailrec
@@ -123,22 +136,6 @@ object Day23Part2 extends Part {
     //------------------------
     // this is the most "sound" approach I came up with, but takes too long and never finishes
     walk(Seq(corner.point), corner.inRange, corner.point.distanceTo(origin))
-  }
-
-  case class Range(low: Long, high: Long) {
-    // calculates the overlap with another range, returning an empty option
-    // if there's no overlap
-    def overlap(otherRange: Range): Option[Range] = {
-      // order ranges by their low bound
-      val r1 = if(low < otherRange.low) this else otherRange
-      val r2 = if(low < otherRange.low) otherRange else this
-      if (r2.low <= r1.high) {
-        val newHigh = if(r2.high < r1.high) r2.high else r1.high
-        Some(Range(r2.low, newHigh))
-      } else {
-        None
-      }
-    }
   }
 
   def shortestDistanceByRanges(bots: Seq[Bot]): Long = {
