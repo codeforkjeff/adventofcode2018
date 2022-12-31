@@ -46,6 +46,8 @@ object Main {
     // Day 21 depends on Day 19 which isn't finished
     Day22Part1,
     Day22Part2,
+    Day23Part1,
+    Day23Part2,
   )
 
   def main(args: Array[String]) = {
