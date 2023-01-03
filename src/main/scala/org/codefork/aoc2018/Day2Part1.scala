@@ -7,7 +7,7 @@ object Day2Part1 extends Part {
 
   case class BoxId(id: String) {
     def getLetterCounts: Map[Char, Int] =
-      id.foldLeft(Map[Char, Int]()) { (counts, letter) =>
+      id.foldLeft(Map.empty[Char, Int]) { (counts, letter) =>
         counts + (letter -> (counts.getOrElse(letter, 0) + 1))
       }
 
@@ -18,7 +18,7 @@ object Day2Part1 extends Part {
     val s = Source.fromURL(url)
     val boxIdCounts = s
       .getLines()
-      .foldLeft(Map[Int, Int]()) { (boxIdCounts, line) =>
+      .foldLeft(Map.empty[Int, Int]) { (boxIdCounts, line) =>
         val boxId = BoxId(line)
         letterCountsToFrequencies(boxId.getLetterCounts)
           .foldLeft(boxIdCounts) { (acc, letterCount) =>
@@ -32,7 +32,7 @@ object Day2Part1 extends Part {
   // e.g. if an id has letter 'a' and letter 'b' occurring twice,
   // resulting set will have single item, int 2, in it (we only count frequencies once).
   def letterCountsToFrequencies(letterCounts: LetterCounts): Set[Int] =
-    letterCounts.foldLeft(Set[Int]()) {
+    letterCounts.foldLeft(Set.empty[Int]) {
       case (acc, (letter, count)) =>
         acc + count
     }
