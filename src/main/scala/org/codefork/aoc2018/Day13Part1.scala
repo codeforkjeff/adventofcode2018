@@ -6,7 +6,7 @@ object Day13Part1 extends Part {
     //val collision = Day13.System.build(Day13.getTestData).findFirstCollision
     val collision = Day13.System.build(Day13.getInput).findFirstCollision
     // website will only accept answer with no spaces
-    collision.x + "," + collision.y
+    s"${collision.x},${collision.y}"
   }
 
 }

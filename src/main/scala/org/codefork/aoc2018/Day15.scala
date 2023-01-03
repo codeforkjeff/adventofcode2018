@@ -64,11 +64,9 @@ object Day15 {
         val allX = allY(y)
         val row = allX.sortBy(xy => xy.x).foldLeft(("", "")) { (acc, xy) =>
           {
-            val hp = if (field(xy).isPerson) {
-              field(xy).asInstanceOf[Person].personType + "(" + field(xy)
-                .asInstanceOf[Person]
-                .hp + ")"
-            } else ""
+            val hp = if (field(xy).isPerson)
+              s"${field(xy).asInstanceOf[Person].personType}(${field(xy).asInstanceOf[Person].hp})"
+            else ""
             (acc._1 + field(xy).toString, acc._2 + hp)
           }
         }

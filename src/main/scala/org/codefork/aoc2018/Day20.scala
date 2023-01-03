@@ -47,7 +47,7 @@ object Day20 {
       val (v, remainder) = queue.dequeue
       val connected = elfMap.doors.getOrElse(v, List.empty).filter(!visited.contains(_))
       if (connected.length > 0) {
-        val newQueue = queue.enqueue(connected)
+        val newQueue = queue.enqueueAll(connected)
         val newPrev = prev ++ connected.map(_ -> v).toMap
         val newVisited = visited ++ connected
         return buildShortestPath(elfMap, newQueue, newVisited, newPrev, connected)

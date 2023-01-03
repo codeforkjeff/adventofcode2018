@@ -212,9 +212,9 @@ object Day24 {
             val map = parensContent.split(";").map(_.strip).foldLeft(Map.empty[SpecialProperties, Seq[AttackType]]) { (acc, fragment) => {
               //println(fragment)
               if (fragment.startsWith("weak to")) {
-                acc.updated(SpecialProperties.Weakness, fragment.replace("weak to ", "").split(",").map(attackString => AttackType.valueOf(attackString.strip.capitalize)))
+                acc.updated(SpecialProperties.Weakness, fragment.replace("weak to ", "").split(",").toSeq.map(attackString => AttackType.valueOf(attackString.strip.capitalize)))
               } else if (fragment.startsWith("immune to")) {
-                acc.updated(SpecialProperties.Immunity, fragment.replace("immune to ", "").split(",").map(attackString => AttackType.valueOf(attackString.strip.capitalize)))
+                acc.updated(SpecialProperties.Immunity, fragment.replace("immune to ", "").split(",").toSeq.map(attackString => AttackType.valueOf(attackString.strip.capitalize)))
               } else {
                 acc
               }

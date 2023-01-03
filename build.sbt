@@ -12,3 +12,5 @@ lazy val root = project
 
     assembly / mainClass := Some("org.codefork.aoc2018.Main")
   )
+
+scalacOptions ++= Seq("-deprecation", "-feature")
