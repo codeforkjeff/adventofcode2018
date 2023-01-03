@@ -33,12 +33,17 @@ object Day24 {
     }
 
     def selectTarget(enemyGroups: Seq[Group]): Option[Group] = {
-      enemyGroups.sortBy(enemyGroup => {
-        // If an attacking group is considering two defending groups to which it would deal
-        // equal damage, it chooses to target the defending group with the largest
-        // effective power; if there is still a tie, it chooses the defending group with the highest initiative.
-        (potentialDamageTo(enemyGroup), enemyGroup.effectivePower, enemyGroup.initiative)
-      }).reverse.headOption
+      enemyGroups
+        .map(enemyGroup => {
+          // If an attacking group is considering two defending groups to which it would deal
+          // equal damage, it chooses to target the defending group with the largest
+          // effective power; if there is still a tie, it chooses the defending group with the highest initiative.
+          (enemyGroup, (potentialDamageTo(enemyGroup), enemyGroup.effectivePower, enemyGroup.initiative))
+        })
+        .filter(_._2._1 > 0)
+        .sortBy(_._2)
+        .map(_._1)
+        .reverse.headOption
     }
   }
 
@@ -52,12 +57,14 @@ object Day24 {
     if (groups.nonEmpty) {
       val group = groups.head
 
-      val targetOption = if (group.armyType == ArmyType.Infection)
-        group.selectTarget(reindeerState.immuneSystem)
+      val candidates = if (group.armyType == ArmyType.Infection)
+        reindeerState.immuneSystem
       else
-        group.selectTarget(reindeerState.infection)
+        reindeerState.infection
 
-      val newreindeerState = if (targetOption.nonEmpty)
+      val targetOption = group.selectTarget(candidates)
+
+      val newReindeerState = if (targetOption.nonEmpty)
         reindeerState.copy(groups = reindeerState.groups.filterNot(_.id == targetOption.get.id))
       else
         reindeerState
@@ -67,11 +74,13 @@ object Day24 {
         attacks :+ Attack(group.id, targetOption.get.id)
       } else
         attacks
-      targetSelection(groups.tail, newreindeerState, newAttacks)
+
+      targetSelection(groups.tail, newReindeerState, newAttacks)
     } else
       attacks
   }
 
+  // encapsulates all the army groups (both immune system and infections) in the reindeer
   case class ReindeerState(groups: Seq[Group] = Seq.empty) {
 
     def infection = groups.filter(_.armyType == ArmyType.Infection)
@@ -87,8 +96,8 @@ object Day24 {
           group
       }))
 
-    def getGroupById(id: String) =
-      groups.find(_.id == id).get
+    def getGroupById(id: String): Option[Group] =
+      groups.find(_.id == id)
 
     // replace the group (either infection or immune system) with newGroup, by id
     def replaceGroup(newGroup: Group) =
@@ -96,15 +105,19 @@ object Day24 {
 
     // execute a single attack, returning an updated reindeerState
     def executeAttack(attack: Attack): ReindeerState = {
-      val group = getGroupById(attack.groupId)
-      val target = getGroupById(attack.targetId)
-      val damage = group.potentialDamageTo(target)
-      //println(s"damage=${damage}")
-      val unitsToKill = damage / target.hitPoints
-      val unitsKilled = if unitsToKill > target.units then target.units else unitsToKill
-      //println(s"${group} attacks defending ${target}, killing ${unitsKilled} units")
-      val newTarget = target.copy(units = target.units - unitsKilled)
-      replaceGroup(newTarget)
+      val groupOpt = getGroupById(attack.groupId)
+      val targetOpt = getGroupById(attack.targetId)
+      if(groupOpt.nonEmpty && targetOpt.nonEmpty) {
+        val group = groupOpt.get
+        val target = targetOpt.get
+        val damage = group.potentialDamageTo(target)
+        val unitsToKill = damage / target.hitPoints
+        val unitsKilled = if unitsToKill > target.units then target.units else unitsToKill
+        //println(s"${group} attacks defending ${target}, killing ${unitsKilled} units")
+        val newTarget = target.copy(units = target.units - unitsKilled)
+        replaceGroup(newTarget)
+      } else
+        this
     }
 
     // do a single "fight" (one round)
@@ -114,15 +127,15 @@ object Day24 {
 
       // Groups attack in decreasing order of initiative, regardless of whether
       // they are part of the infection or the immune system.
-      val attacksOrdered = attacks.sortBy(attack => getGroupById(attack.groupId).initiative).reverse
-      val result = attacksOrdered.foldLeft(this)((acc, attack) => {
-        acc.executeAttack(attack)
+      val attacksOrdered = attacks.sortBy(attack => getGroupById(attack.groupId).get.initiative).reverse
+      attacksOrdered.foldLeft(this)((acc, attack) => {
+        val afterAttack = acc.executeAttack(attack)
+        // remove groups whose units have all been killed
+        afterAttack.copy(groups = afterAttack.groups.filter(_.units > 0))
       })
-      // remove groups whose units have all been killed
-      result.copy(groups = result.groups.filter(_.units > 0))
     }
 
-    def unitsOfWinningArmy: Int =
+    def unitsRemaining: Int =
       groups.map(_.units).sum
 
     def winningArmy: ArmyType =
@@ -147,20 +160,10 @@ object Day24 {
     }
   }
 
-  @tailrec
-  def fightUntilWin(reindeerState: ReindeerState, i: Int = 0): ReindeerState = {
-    reindeerState.display()
-    if (reindeerState.infection.isEmpty || reindeerState.immuneSystem.isEmpty) {
-      reindeerState
-    } else {
-      fightUntilWin(reindeerState.fight(), i + 1)
-    }
-  }
-
   case class Result(reindeerState: ReindeerState, deadlocked: Boolean)
 
   @tailrec
-  def fightUntilWinWithDeadlockDetection(reindeerState: ReindeerState, i: Int = 0): Result = {
+  def fightUntilWin(reindeerState: ReindeerState, i: Int = 0): Result = {
     //reindeerState.display()
     if (reindeerState.infection.isEmpty || reindeerState.immuneSystem.isEmpty) {
       Result(reindeerState, false)
@@ -170,7 +173,7 @@ object Day24 {
         //println("deadlock detected, exiting")
         Result(newReindeerState, true)
       } else {
-        fightUntilWinWithDeadlockDetection(newReindeerState, i + 1)
+        fightUntilWin(newReindeerState, i + 1)
       }
     }
   }

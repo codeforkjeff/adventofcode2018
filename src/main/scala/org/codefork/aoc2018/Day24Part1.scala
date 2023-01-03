@@ -9,7 +9,7 @@ object Day24Part1 extends Part {
     val reindeerState = Day24.parseInput("/day24/input.txt")
 
     val result = Day24.fightUntilWin(reindeerState)
-    result.unitsOfWinningArmy.toString
+    result.reindeerState.unitsRemaining.toString
   }
 
 }
