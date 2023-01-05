@@ -13,15 +13,17 @@ now.
 
 Here's what's left unfinished:
 
-Day 15 Part 2 - uses a brute force method that takes ~140s to run, needs optimization.
+- Day 15 Part 2 - uses a brute force method that takes ~140s to run, needs
+  optimization but I was too lazy to return to it.
 
-Day 19 Part 2 - I'm not sure there's a solution in code for
-this. Everyone on reddit seemed to solve it by noticing what the loops
-effectively do and calculating the final answer using pen and paper.
+- Day 19 Part 2 - I'm not sure there's a solution in code for
+  this. Everyone on reddit seemed to solve it by noticing what the
+  loops effectively do and calculating the final answer using pen and
+  paper.
 
-Day 21 - same type of problem as Day 19 Part 2.
+- Day 21 - same type of problem as Day 19 Part 2.
 
-Day 25 Part 2 - you only get the input if you finish all the other puzzles first.
+- Day 25 Part 2 - you only get the input if you finish all the other puzzles first.
 
 Reflections:
 
