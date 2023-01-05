@@ -40,10 +40,10 @@ object Main {
     Day18Part1,
     Day18Part2,
     Day19Part1,
-    //Day19Part2
+    // Day19Part2 - couldn't do this one
     Day20Part1,
     Day20Part2,
-    // Day 21 depends on Day 19 which isn't finished
+    // Day 21 seems similar in nature to Day 19
     Day22Part1,
     Day22Part2,
     Day23Part1,
@@ -51,6 +51,8 @@ object Main {
     Day24Part1,
     Day24Part2,
     Day25Part1,
+    // Day 25 Part 2 requires that you solve all the previous puzzles
+    // to get the input, so I couldn't reach this one
   )
 
   def main(args: Array[String]) = {

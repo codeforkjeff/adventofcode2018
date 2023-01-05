@@ -19,7 +19,7 @@ object Day19 {
         val instr = instructions(ip)
         val r2 = registers.set(ipBoundToRegister, ip)
         val r3 = r2.execute(instr)
-        println("ip = " + ip + " " + r2 + " " + instr + " " + r3)
+        //println("ip = " + ip + " " + r2 + " " + instr + " " + r3)
         val newIp = r3.get(ipBoundToRegister) + 1
         copy(registers = r3, ip = newIp).execute
       } else
@@ -28,8 +28,8 @@ object Day19 {
 
   }
 
-  def getProgram(initialRegisters: Registers = Registers(Seq(0, 0, 0, 0, 0, 0)), ip: Int = 0) = {
-    val url = getClass.getResource("/day19/input.txt")
+  def getProgram(path: String, initialRegisters: Registers = Registers(Seq(0, 0, 0, 0, 0, 0)), ip: Int = 0) = {
+    val url = getClass.getResource(path)
     val lines = Source.fromURL(url).getLines().toSeq
 
     val ipBoundToRegister = lines.find(_.startsWith("#ip")).get.split(" ")(1).toInt
