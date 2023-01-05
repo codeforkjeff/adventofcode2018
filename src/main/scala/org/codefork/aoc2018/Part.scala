@@ -12,12 +12,20 @@ trait Part {
 
   def status: Status = Finished
 
+  val validateTestData = true
+
+  // default to noop
+  def assertTestCases(): Unit = ()
+
   def answer: String
 
   def main(args: Array[String]): Unit = run()
 
   def run(): Unit = {
     val name = getClassName
+    if(validateTestData) {
+      assertTestCases()
+    }
     val t0 = System.currentTimeMillis()
     val answerValue = answer
     val t1 = System.currentTimeMillis()
